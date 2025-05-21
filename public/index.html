@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmoBoy - Emotion Detection</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <h3>EmoBoy</h3>
+                <button id="toggleSidebar" class="toggle-btn">☰</button>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#detection" class="active">Deteksi Emosi</a></li>
+                <li><a href="#history">Riwayat Deteksi</a></li>
+                <li><a href="#about">Tentang Aplikasi</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div id="detection" class="content-section active">
+                <h2>Deteksi Emosi</h2>
+                <div class="detection-container">
+                    <div class="video-container">
+                        <video id="video" width="640" height="480" autoplay muted></video>
+                        <canvas id="overlay"></canvas>
+                    </div>
+                    <div class="controls">
+                        <button id="startDetection" class="btn primary">Mulai Deteksi</button>
+                        <button id="stopDetection" class="btn secondary" disabled>Hentikan</button>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="emotionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div id="history" class="content-section">
+                <h2>Riwayat Deteksi</h2>
+                <div class="history-container">
+                    <div class="history-list"></div>
+                </div>
+            </div>
+
+            <div id="about" class="content-section">
+                <h2>Tentang Aplikasi</h2>
+                <div class="about-content">
+                    <p>EmoBoy adalah aplikasi deteksi emosi yang menggunakan teknologi FaceAPI.js untuk menganalisis ekspresi wajah secara real-time.</p>
+                    <p>Aplikasi ini dapat mendeteksi emosi positif, netral, dan negatif, serta menampilkan hasilnya dalam bentuk grafik.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/chart.umd.js" defer></script>
+    <script src="js/face-api.min.js" defer></script>
+
+    <script src="js/faceDetector.js" defer></script>
+    <script src="js/chartManager.js" defer></script>
+    <script src="js/storageManager.js" defer></script>
+    <script src="js/uiController.js" defer></script>
+    <script src="js/app.js" defer></script>
+</body>
+</html> 
