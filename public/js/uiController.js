@@ -6,8 +6,12 @@ class UIController {
         this.contentSections = document.querySelectorAll('.content-section');
         this.startBtn = document.getElementById('startDetection');
         this.stopBtn = document.getElementById('stopDetection');
+        this.historyList = document.querySelector('.history-list');
+        this.historyChartCanvas = document.getElementById('historyChart');
+        this.historyChart = null;
         
         this.initializeEventListeners();
+        this.initializeHistoryChart();
     }
 
     initializeEventListeners() {
@@ -74,18 +78,78 @@ class UIController {
     }
 
     updateHistoryView(sessions) {
-        const historyList = document.querySelector('.history-list');
-        historyList.innerHTML = '';
+        this.historyList.innerHTML = '';
 
         sessions.forEach(session => {
             const sessionElement = this.createSessionElement(session);
-            historyList.appendChild(sessionElement);
+            this.historyList.appendChild(sessionElement);
         });
+
+        this.updateHistoryChart(sessions);
+    }
+
+    initializeHistoryChart() {
+        if (!this.historyChartCanvas) return;
+
+        const ctx = this.historyChartCanvas.getContext('2d');
+        this.historyChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Positive', 'Neutral', 'Negative'],
+                datasets: [
+                    {
+                        label: 'Emotion Distribution',
+                        backgroundColor: ['#2ecc71', '#f1c40f', '#e74c3c'],
+                        data: []
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Overall Emotion Distribution Across All Sessions'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw;
+                                const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
+                                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                return `${label}: ${value} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    updateHistoryChart(sessions) {
+        if (!this.historyChart) return;
+
+        let totalPositive = 0;
+        let totalNeutral = 0;
+        let totalNegative = 0;
+
+        sessions.forEach(session => {
+            totalPositive += session.emotionSummary?.positive || 0;
+            totalNeutral += session.emotionSummary?.neutral || 0;
+            totalNegative += session.emotionSummary?.negative || 0;
+        });
+
+        this.historyChart.data.datasets[0].data = [totalPositive, totalNeutral, totalNegative];
+
+        this.historyChart.update();
     }
 
     createSessionElement(session) {
         const element = document.createElement('div');
         element.className = 'session-card';
+        element.dataset.sessionId = session.id;
         
         const startTime = new Date(session.startTime).toLocaleString();
         const endTime = session.endTime ? new Date(session.endTime).toLocaleString() : 'Ongoing';
@@ -109,10 +173,16 @@ class UIController {
 
         // Add delete functionality
         const deleteBtn = element.querySelector('.delete-btn');
-        deleteBtn.addEventListener('click', () => {
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             document.dispatchEvent(new CustomEvent('deleteSession', {
                 detail: { sessionId: session.id }
             }));
+        });
+
+        // Add click listener to navigate to session detail page
+        element.addEventListener('click', () => {
+            window.location.href = `/session-detail.html?sessionId=${session.id}`;
         });
 
         return element;

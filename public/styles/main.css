@@ -148,6 +148,7 @@ body {
 .chart-container {
     width: 100%;
     max-width: 800px;
+    max-height: 400px;
     margin: 0 auto;
     padding: 1rem;
     background-color: white;
@@ -170,6 +171,18 @@ body {
     max-width: 800px;
     margin: 0 auto;
     line-height: 1.6;
+}
+
+/* Session Detail Styles */
+.session-detail-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+}
+
+#session-info {
+    margin-bottom: 0;
 }
 
 /* Responsive Design */

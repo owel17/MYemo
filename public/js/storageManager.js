@@ -15,21 +15,42 @@ class StorageManager {
 
     saveEmotionData(emotionData) {
         this.currentSession.data.push(emotionData);
-        this.saveToLocalStorage();
+        // Removed: Auto-save on every data point. This can be inefficient.
+        // this.saveToLocalStorage();
     }
 
     endSession() {
         this.currentSession.endTime = new Date().toISOString();
-        this.saveToLocalStorage();
-        
-        // Prepare data for future MongoDB storage
-        const sessionData = {
-            ...this.currentSession,
-            totalScore: this.calculateTotalScore(),
-            emotionSummary: this.generateEmotionSummary()
-        };
 
-        // Reset current session
+        // Get all existing sessions
+        const allSessions = this.getAllSessions();
+
+        // Find if this session already exists (e.g., if page was refreshed during a session)
+        const existingSessionIndex = allSessions.findIndex(s => s.id === this.currentSession.id);
+
+        if (existingSessionIndex !== -1) {
+            // Update existing session
+            allSessions[existingSessionIndex] = {
+                 ...this.currentSession,
+                 totalScore: this.calculateTotalScore(),
+                 emotionSummary: this.generateEmotionSummary()
+             };
+        } else {
+            // Add new session to the list
+            allSessions.push({
+                ...this.currentSession,
+                totalScore: this.calculateTotalScore(),
+                emotionSummary: this.generateEmotionSummary()
+            });
+        }
+
+        // Save the updated list of all sessions to localStorage
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(allSessions));
+
+        // Prepare data for future MongoDB storage (optional)
+        const sessionDataForMongoDB = allSessions[existingSessionIndex !== -1 ? existingSessionIndex : allSessions.length - 1]; // Get the session data that was just saved/updated
+
+        // Reset current session for a new start
         this.currentSession = {
             id: this.generateSessionId(),
             startTime: new Date().toISOString(),
@@ -37,7 +58,8 @@ class StorageManager {
             data: []
         };
 
-        return sessionData;
+        // We return the session data that was just saved for potential external use (like MongoDB save)
+        return sessionDataForMongoDB;
     }
 
     calculateTotalScore() {
@@ -61,16 +83,18 @@ class StorageManager {
     }
 
     saveToLocalStorage() {
-        const allSessions = this.getAllSessions();
-        const existingSessionIndex = allSessions.findIndex(s => s.id === this.currentSession.id);
+        // Removed: This method is no longer needed in its previous form.
+        // Logic moved to endSession and potentially saveEmotionData if needed.
+        // const allSessions = this.getAllSessions();
+        // const existingSessionIndex = allSessions.findIndex(s => s.id === this.currentSession.id);
 
-        if (existingSessionIndex !== -1) {
-            allSessions[existingSessionIndex] = this.currentSession;
-        } else {
-            allSessions.push(this.currentSession);
-        }
+        // if (existingSessionIndex !== -1) {
+        //     allSessions[existingSessionIndex] = this.currentSession;
+        // } else {
+        //     allSessions.push(this.currentSession);
+        // }
 
-        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(allSessions));
+        // localStorage.setItem(this.STORAGE_KEY, JSON.stringify(allSessions));
     }
 
     getAllSessions() {

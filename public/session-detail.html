@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Detail</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar - You might want to include the sidebar here or a simplified navigation -->
+        <nav id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <h3>EmoBoy</h3>
+                <button id="toggleSidebar" class="toggle-btn">☰</button>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html#detection">Deteksi Emosi</a></li>
+                <li><a href="index.html#history">Riwayat Deteksi</a></li>
+                <li><a href="index.html#about">Tentang Aplikasi</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content for Session Detail -->
+        <main class="main-content">
+            <div class="content-section active" id="session-detail-section">
+                <h2 id="session-title">Session Detail</h2>
+                <div class="session-detail-content">
+                    <div id="session-info">
+                        <p><strong>Session ID:</strong> <span id="detail-session-id"></span></p>
+                        <p><strong>Start Time:</strong> <span id="detail-start-time"></span></p>
+                        <p><strong>End Time:</strong> <span id="detail-end-time"></span></p>
+                        <p><strong>Total Score:</strong> <span id="detail-total-score"></span></p>
+                        <p><strong>Positive Count:</strong> <span id="detail-positive-count"></span></p>
+                        <p><strong>Neutral Count:</strong> <span id="detail-neutral-count"></span></p>
+                        <p><strong>Negative Count:</strong> <span id="detail-negative-count"></span></p>
+                        <p><strong>Average Score:</strong> <span id="detail-average-score"></span></p>
+                    </div>
+
+                    <div class="chart-container" style="max-width: 400px;">
+                        <h3>Emotion Trend Over Time</h3>
+                        <canvas id="sessionEmotionChart"></canvas>
+                    </div>
+
+                    <div class="chart-container" style="max-width: 400px;">
+                        <h3>Emotion Distribution for this Session</h3>
+                        <canvas id="sessionSummaryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/storageManager.js"></script> <!-- Need StorageManager to get session data -->
+    <script src="js/sessionDetail.js"></script> <!-- Script for this page -->
+</body>
+</html> 
