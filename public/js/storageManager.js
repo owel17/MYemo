@@ -1,155 +1,122 @@
 class StorageManager {
     constructor() {
-        this.STORAGE_KEY = 'emotion_tracking_data';
-        this.currentSession = {
-            id: this.generateSessionId(),
-            startTime: new Date().toISOString(),
-            endTime: null,
-            data: []
-        };
-    }
-
-    generateSessionId() {
-        return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        this.currentSession = null;
+        this.STORAGE_KEY = 'emotion_tracker_sessions';
     }
 
     saveEmotionData(emotionData) {
-        this.currentSession.data.push(emotionData);
-        // Removed: Auto-save on every data point. This can be inefficient.
-        // this.saveToLocalStorage();
+        if (!this.currentSession) {
+            this.currentSession = {
+                id: Date.now().toString(),
+                startTime: new Date().toISOString(),
+                emotions: []
+            };
+        }
+        
+        this.currentSession.emotions.push({
+            timestamp: new Date().toISOString(),
+            ...emotionData
+        });
+        
+        this.saveToLocalStorage();
     }
 
     endSession() {
-        this.currentSession.endTime = new Date().toISOString();
+        if (this.currentSession) {
+            this.currentSession.endTime = new Date().toISOString();
+            
+            // Calculate statistics for the session
+            const emotionCounts = {
+                positive: 0,
+                neutral: 0,
+                negative: 0
+            };
+            let totalScore = 0;
 
-        // Get all existing sessions
-        const allSessions = this.getAllSessions();
-
-        // Find if this session already exists (e.g., if page was refreshed during a session)
-        const existingSessionIndex = allSessions.findIndex(s => s.id === this.currentSession.id);
-
-        if (existingSessionIndex !== -1) {
-            // Update existing session
-            allSessions[existingSessionIndex] = {
-                 ...this.currentSession,
-                 totalScore: this.calculateTotalScore(),
-                 emotionSummary: this.generateEmotionSummary()
-             };
-        } else {
-            // Add new session to the list
-            allSessions.push({
-                ...this.currentSession,
-                totalScore: this.calculateTotalScore(),
-                emotionSummary: this.generateEmotionSummary()
+            this.currentSession.emotions.forEach(emotion => {
+                if (emotion.score === 1) {
+                    emotionCounts.positive++;
+                } else if (emotion.score === -1) {
+                    emotionCounts.negative++;
+                } else {
+                    emotionCounts.neutral++;
+                }
+                totalScore += emotion.score;
             });
+
+            // Add statistics to the session object
+            this.currentSession.emotionSummary = emotionCounts;
+            this.currentSession.totalScore = totalScore;
+
+            const sessionData = { ...this.currentSession };
+            this.currentSession = null;
+            this.saveToLocalStorage();
+            return sessionData;
         }
-
-        // Save the updated list of all sessions to localStorage
-        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(allSessions));
-
-        // Prepare data for future MongoDB storage (optional)
-        const sessionDataForMongoDB = allSessions[existingSessionIndex !== -1 ? existingSessionIndex : allSessions.length - 1]; // Get the session data that was just saved/updated
-
-        // Reset current session for a new start
-        this.currentSession = {
-            id: this.generateSessionId(),
-            startTime: new Date().toISOString(),
-            endTime: null,
-            data: []
-        };
-
-        // We return the session data that was just saved for potential external use (like MongoDB save)
-        return sessionDataForMongoDB;
-    }
-
-    calculateTotalScore() {
-        return this.currentSession.data.reduce((sum, data) => sum + data.score, 0);
-    }
-
-    generateEmotionSummary() {
-        const summary = {
-            positive: 0,
-            neutral: 0,
-            negative: 0
-        };
-
-        this.currentSession.data.forEach(data => {
-            if (data.score === 1) summary.positive++;
-            else if (data.score === 0) summary.neutral++;
-            else if (data.score === -1) summary.negative++;
-        });
-
-        return summary;
-    }
-
-    saveToLocalStorage() {
-        // Removed: This method is no longer needed in its previous form.
-        // Logic moved to endSession and potentially saveEmotionData if needed.
-        // const allSessions = this.getAllSessions();
-        // const existingSessionIndex = allSessions.findIndex(s => s.id === this.currentSession.id);
-
-        // if (existingSessionIndex !== -1) {
-        //     allSessions[existingSessionIndex] = this.currentSession;
-        // } else {
-        //     allSessions.push(this.currentSession);
-        // }
-
-        // localStorage.setItem(this.STORAGE_KEY, JSON.stringify(allSessions));
+        return null;
     }
 
     getAllSessions() {
-        const data = localStorage.getItem(this.STORAGE_KEY);
-        return data ? JSON.parse(data) : [];
+        const sessions = localStorage.getItem(this.STORAGE_KEY);
+        return sessions ? JSON.parse(sessions) : [];
     }
 
     getSessionById(sessionId) {
-        const allSessions = this.getAllSessions();
-        return allSessions.find(session => session.id === sessionId);
+        const sessions = this.getAllSessions();
+        return sessions.find(session => session.id === sessionId);
     }
 
     deleteSession(sessionId) {
-        const allSessions = this.getAllSessions();
-        const updatedSessions = allSessions.filter(session => session.id !== sessionId);
+        const sessions = this.getAllSessions();
+        const updatedSessions = sessions.filter(session => session.id !== sessionId);
         localStorage.setItem(this.STORAGE_KEY, JSON.stringify(updatedSessions));
     }
 
-    clearAllSessions() {
-        localStorage.removeItem(this.STORAGE_KEY);
+    saveToLocalStorage() {
+        const sessions = this.getAllSessions();
+        if (this.currentSession) {
+            const existingSessionIndex = sessions.findIndex(s => s.id === this.currentSession.id);
+            if (existingSessionIndex !== -1) {
+                sessions[existingSessionIndex] = this.currentSession;
+            } else {
+                sessions.push(this.currentSession);
+            }
+        }
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(sessions));
     }
 
-    // Future MongoDB integration methods
-    async saveToMongoDB(sessionData) {
-        try {
-            const response = await fetch('/api/tracking', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(sessionData)
+    getStatistics() {
+        const sessions = this.getAllSessions();
+        const stats = {
+            totalSessions: sessions.length,
+            totalDuration: 0,
+            averageEmotions: {}
+        };
+
+        sessions.forEach(session => {
+            const startTime = new Date(session.startTime);
+            const endTime = new Date(session.endTime || new Date());
+            stats.totalDuration += (endTime - startTime) / 1000; // Convert to seconds
+
+            session.emotions.forEach(emotion => {
+                Object.keys(emotion).forEach(key => {
+                    if (key !== 'timestamp') {
+                        if (!stats.averageEmotions[key]) {
+                            stats.averageEmotions[key] = 0;
+                        }
+                        stats.averageEmotions[key] += emotion[key];
+                    }
+                });
             });
+        });
 
-            if (!response.ok) {
-                throw new Error('Failed to save to MongoDB');
-            }
+        // Calculate averages
+        const totalEmotions = sessions.reduce((sum, session) => sum + session.emotions.length, 0);
+        Object.keys(stats.averageEmotions).forEach(key => {
+            stats.averageEmotions[key] = stats.averageEmotions[key] / totalEmotions;
+        });
 
-            return await response.json();
-        } catch (error) {
-            console.error('Error saving to MongoDB:', error);
-            throw error;
-        }
-    }
-
-    async getSessionsFromMongoDB() {
-        try {
-            const response = await fetch('/api/tracking');
-            if (!response.ok) {
-                throw new Error('Failed to fetch from MongoDB');
-            }
-            return await response.json();
-        } catch (error) {
-            console.error('Error fetching from MongoDB:', error);
-            throw error;
-        }
+        return stats;
     }
 }
 

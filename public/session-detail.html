@@ -1,58 +1,97 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Session Detail</title>
+    <title>Detail Sesi - MYemo</title>
     <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="app-container">
-        <!-- Sidebar - You might want to include the sidebar here or a simplified navigation -->
+        <!-- Sidebar -->
         <nav id="sidebar" class="sidebar">
             <div class="sidebar-header">
-                <h3>EmoBoy</h3>
-                <button id="toggleSidebar" class="toggle-btn">☰</button>
+                <h3>MYemo</h3>
+                <button id="toggleSidebar" class="toggle-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
             <ul class="nav-links">
-                <li><a href="index.html#detection">Deteksi Emosi</a></li>
-                <li><a href="index.html#history">Riwayat Deteksi</a></li>
-                <li><a href="index.html#about">Tentang Aplikasi</a></li>
+                <li>
+                    <a href="/">
+                        <i class="fas fa-camera"></i>
+                        <span>Deteksi Emosi</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/#history">
+                        <i class="fas fa-history"></i>
+                        <span>Riwayat Deteksi</span>
+                    </a>
+                </li>
             </ul>
         </nav>
 
-        <!-- Main Content for Session Detail -->
+        <!-- Main Content -->
         <main class="main-content">
-            <div class="content-section active" id="session-detail-section">
-                <h2 id="session-title">Session Detail</h2>
-                <div class="session-detail-content">
-                    <div id="session-info">
-                        <p><strong>Session ID:</strong> <span id="detail-session-id"></span></p>
-                        <p><strong>Start Time:</strong> <span id="detail-start-time"></span></p>
-                        <p><strong>End Time:</strong> <span id="detail-end-time"></span></p>
-                        <p><strong>Total Score:</strong> <span id="detail-total-score"></span></p>
-                        <p><strong>Positive Count:</strong> <span id="detail-positive-count"></span></p>
-                        <p><strong>Neutral Count:</strong> <span id="detail-neutral-count"></span></p>
-                        <p><strong>Negative Count:</strong> <span id="detail-negative-count"></span></p>
-                        <p><strong>Average Score:</strong> <span id="detail-average-score"></span></p>
+            <div class="session-detail-container">
+                <div class="session-header">
+                    <h2>Detail Sesi</h2>
+                    <div class="session-info">
+                        <div class="info-item">
+                            <i class="fas fa-calendar"></i>
+                            <span id="sessionDate">Tanggal: -</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-clock"></i>
+                            <span id="sessionDuration">Durasi: -</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="session-content">
+                    <div class="emotion-summary">
+                        <h3>Ringkasan Emosi</h3>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <h4>Emosi Dominan</h4>
+                                <p id="dominantEmotion">-</p>
+                            </div>
+                            <div class="summary-item">
+                                <h4>Rata-rata Kepercayaan</h4>
+                                <p id="averageConfidence">-</p>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="chart-container" style="max-width: 400px;">
-                        <h3>Emotion Trend Over Time</h3>
-                        <canvas id="sessionEmotionChart"></canvas>
+                    <div class="emotion-charts">
+                        <div class="chart-container">
+                            <h3>Distribusi Emosi</h3>
+                            <canvas id="emotionDistributionChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3>Perubahan Emosi</h3>
+                            <canvas id="emotionTimelineChart"></canvas>
+                        </div>
                     </div>
 
-                    <div class="chart-container" style="max-width: 400px;">
-                        <h3>Emotion Distribution for this Session</h3>
-                        <canvas id="sessionSummaryChart"></canvas>
+                    <div class="emotion-timeline">
+                        <h3>Timeline Emosi</h3>
+                        <div id="emotionTimeline" class="timeline-container">
+                            <!-- Timeline items will be added here dynamically -->
+                        </div>
                     </div>
                 </div>
             </div>
         </main>
     </div>
 
-    <script src="js/storageManager.js"></script> <!-- Need StorageManager to get session data -->
-    <script src="js/sessionDetail.js"></script> <!-- Script for this page -->
+    <!-- Scripts -->
+    <script src="js/chart.umd.js"></script>
+    <script src="js/storageManager.js"></script>
+    <script src="js/chartManager.js"></script>
+    <script src="js/sessionDetail.js"></script>
 </body>
 </html> 

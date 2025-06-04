@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EmoBoy - Emotion Detection</title>
+    <title>MYemo - Deteksi Emosi Real-time</title>
     <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
 </head>
@@ -13,13 +14,30 @@
         <!-- Sidebar -->
         <nav id="sidebar" class="sidebar">
             <div class="sidebar-header">
-                <h3>EmoBoy</h3>
-                <button id="toggleSidebar" class="toggle-btn">☰</button>
+                <h3>MYemo</h3>
+                <button id="toggleSidebar" class="toggle-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
             <ul class="nav-links">
-                <li><a href="#detection" class="active">Deteksi Emosi</a></li>
-                <li><a href="#history">Riwayat Deteksi</a></li>
-                <li><a href="#about">Tentang Aplikasi</a></li>
+                <li>
+                    <a href="#detection" class="active">
+                        <i class="fas fa-camera"></i>
+                        <span>Deteksi Emosi</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#history">
+                        <i class="fas fa-history"></i>
+                        <span>Riwayat Deteksi</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#about">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Tentang Aplikasi</span>
+                    </a>
+                </li>
             </ul>
         </nav>
 
@@ -53,8 +71,16 @@
             <div id="about" class="content-section">
                 <h2>Tentang Aplikasi</h2>
                 <div class="about-content">
-                    <p>EmoBoy adalah aplikasi deteksi emosi yang menggunakan teknologi FaceAPI.js untuk menganalisis ekspresi wajah secara real-time.</p>
-                    <p>Aplikasi ini dapat mendeteksi emosi positif, netral, dan negatif, serta menampilkan hasilnya dalam bentuk grafik.</p>
+                    <p>MYemo adalah aplikasi canggih untuk deteksi emosi real-time yang menggunakan teknologi AI untuk menganalisis ekspresi wajah secara akurat.</p>
+                    <p>Fitur utama:</p>
+                    <ul>
+                        <li>Deteksi emosi real-time menggunakan kamera</li>
+                        <li>Analisis ekspresi wajah yang akurat</li>
+                        <li>Visualisasi data emosi dalam bentuk grafik</li>
+                        <li>Riwayat deteksi emosi yang terorganisir</li>
+                        <li>Antarmuka yang intuitif dan mudah digunakan</li>
+                    </ul>
+                    <p>Aplikasi ini dapat membantu Anda memahami dan melacak perubahan emosi Anda dari waktu ke waktu.</p>
                 </div>
             </div>
         </main>

@@ -24,11 +24,6 @@ class FaceDetector {
             
             this.modelsLoaded = true;
             console.log('FaceAPI models loaded successfully');
-            
-            // Removed: Set canvas dimensions here - will set after video metadata is loaded in startCamera
-            // this.canvas.width = this.video.width;
-            // this.canvas.height = this.video.height;
-            
             return true;
         } catch (error) {
             console.error('Error loading FaceAPI models:', error);
@@ -39,13 +34,24 @@ class FaceDetector {
 
     async startCamera() {
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            const stream = await navigator.mediaDevices.getUserMedia({ 
+                video: { 
+                    width: { ideal: 640 },
+                    height: { ideal: 480 }
+                } 
+            });
             this.video.srcObject = stream;
+            
             return new Promise((resolve) => {
                 this.video.onloadedmetadata = () => {
-                    // Set canvas dimensions here, after video metadata is loaded
-                    this.canvas.width = this.video.videoWidth; // Use videoWidth/videoHeight for intrinsic size
+                    // Set video dimensions
+                    this.video.width = this.video.videoWidth;
+                    this.video.height = this.video.videoHeight;
+                    
+                    // Set canvas dimensions to match video
+                    this.canvas.width = this.video.videoWidth;
                     this.canvas.height = this.video.videoHeight;
+                    
                     console.log(`Video dimensions: ${this.video.videoWidth}x${this.video.videoHeight}`);
                     console.log(`Canvas dimensions: ${this.canvas.width}x${this.canvas.height}`);
                     resolve();
@@ -53,7 +59,7 @@ class FaceDetector {
             });
         } catch (error) {
             console.error('Error accessing camera:', error);
-            throw error;
+            throw new Error('Tidak dapat mengakses kamera. Pastikan kamera terhubung dan izin kamera telah diberikan.');
         }
     }
 
@@ -65,61 +71,42 @@ class FaceDetector {
         this.emotionCallback = callback;
         this.isDetecting = true;
 
-        // Start the first detection frame - Removed, loop will start on video play
-        // this.detectEmotion();
-
-        // Add event listener for video play to start the loop
         this.video.addEventListener('play', () => {
-             console.log('Video playing, starting processing loop...');
-             this.startProcessingVideo();
-         });
+            console.log('Video playing, starting processing loop...');
+            this.startProcessingVideo();
+        });
     }
 
     stopDetection() {
         this.isDetecting = false;
-
-        // Cancel animation frame
         if (this.animationFrameId) {
             cancelAnimationFrame(this.animationFrameId);
             this.animationFrameId = null;
         }
     }
 
-    // New function to start the processing loop
     startProcessingVideo() {
-        if (!this.isDetecting) return; // Stop loop if detection is cancelled
+        if (!this.isDetecting) return;
 
-        // Call the detection function for the current frame
         this.detectEmotion();
-
-        // Schedule the next frame processing
         this.animationFrameId = requestAnimationFrame(() => this.startProcessingVideo());
     }
 
     async detectEmotion() {
-        // if (!this.isDetecting) return; // Removed: Check handled by startProcessingVideo
-
         try {
-            // Ensure video has dimensions (no need to check .playing here, loop starts on play)
             if (this.video.readyState === 4) {
                 const detections = await faceapi.detectAllFaces(
                     this.video,
                     new faceapi.SsdMobilenetv1Options({ minConfidence: 0.2 })
                 ).withFaceLandmarks().withFaceExpressions();
 
-                // Clear canvas before drawing
                 this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
                 if (detections.length > 0) {
-                    // Draw detections
                     this.drawDetections(detections);
-
-                    // Get dominant emotion
                     const dominantEmotion = this.getDominantEmotion(detections[0].expressions);
                     const score = this.calculateEmotionScore(dominantEmotion);
                     
-                    console.log('Detected emotion:', dominantEmotion, 'Score:', score);
-
                     if (this.emotionCallback) {
                         this.emotionCallback({
                             emotion: dominantEmotion,
@@ -127,29 +114,20 @@ class FaceDetector {
                             timestamp: new Date().toISOString()
                         });
                     }
-                } else {
-                    console.log('No face detected');
                 }
             }
         } catch (error) {
             console.error('Error detecting emotions:', error);
         }
-
-        // Removed: Schedule the next frame detection here
-        // if (this.isDetecting) {
-        //      this.animationFrameId = requestAnimationFrame(() => this.detectEmotion());
-        // }
     }
 
     drawDetections(detections) {
-        // Draw face detection box
-        faceapi.draw.drawDetections(this.canvas, detections);
+        const displaySize = { width: this.video.width, height: this.video.height };
+        const resizedDetections = faceapi.resizeResults(detections, displaySize);
         
-        // Draw face landmarks
-        faceapi.draw.drawFaceLandmarks(this.canvas, detections);
-        
-        // Draw face expressions
-        faceapi.draw.drawFaceExpressions(this.canvas, detections, 0.5);
+        faceapi.draw.drawDetections(this.canvas, resizedDetections);
+        faceapi.draw.drawFaceLandmarks(this.canvas, resizedDetections);
+        faceapi.draw.drawFaceExpressions(this.canvas, resizedDetections, 0.5);
     }
 
     getDominantEmotion(expressions) {
@@ -174,5 +152,4 @@ class FaceDetector {
     }
 }
 
-// Export for use in other modules
 window.FaceDetector = FaceDetector; 

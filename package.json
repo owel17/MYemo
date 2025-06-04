@@ -1,11 +1,11 @@
 {
-  "name": "emoboy",
+  "name": "myemo",
   "version": "1.0.0",
-  "description": "Real-time emotion detection web application",
-  "main": "server/server.js",
+  "description": "Aplikasi deteksi emosi real-time dengan analisis ekspresi wajah menggunakan teknologi AI",
+  "main": "server/index.js",
   "scripts": {
-    "start": "node server/server.js",
-    "dev": "nodemon server/server.js",
+    "start": "node server/index.js",
+    "dev": "nodemon server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -19,9 +19,9 @@
   "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
-    "dotenv": "^16.0.3",
-    "express": "^4.18.2",
-    "mongoose": "^7.0.3"
+    "dotenv": "^16.5.0",
+    "express": "^4.21.2",
+    "mongoose": "^7.8.7"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
