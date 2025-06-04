@@ -1,7 +1,5 @@
 class UIController {
     constructor() {
-        this.sidebar = document.getElementById('sidebar');
-        this.toggleBtn = document.getElementById('toggleSidebar');
         this.navLinks = document.querySelectorAll('.nav-links a');
         this.contentSections = document.querySelectorAll('.content-section');
         this.startBtn = document.getElementById('startDetection');
@@ -15,9 +13,6 @@ class UIController {
     }
 
     initializeEventListeners() {
-        // Sidebar toggle
-        this.toggleBtn.addEventListener('click', () => this.toggleSidebar());
-
         // Navigation
         this.navLinks.forEach(link => {
             link.addEventListener('click', (e) => {
@@ -29,10 +24,6 @@ class UIController {
         // Detection controls
         this.startBtn.addEventListener('click', () => this.handleStartDetection());
         this.stopBtn.addEventListener('click', () => this.handleStopDetection());
-    }
-
-    toggleSidebar() {
-        this.sidebar.classList.toggle('collapsed');
     }
 
     handleNavigation(clickedLink) {

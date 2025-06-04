@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MYemo - Deteksi Emosi Real-time</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -11,34 +12,31 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- Sidebar -->
-        <nav id="sidebar" class="sidebar">
-            <div class="sidebar-header">
-                <h3>MYemo</h3>
-                <button id="toggleSidebar" class="toggle-btn">
-                    <i class="fas fa-bars"></i>
-                </button>
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <div class="nav-container">
+                <a href="#" class="nav-brand">MYemo</a>
+                <ul class="nav-links">
+                    <li>
+                        <a href="#detection" class="active">
+                            <i class="fas fa-camera"></i>
+                            <span>Deteksi Emosi</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#history">
+                            <i class="fas fa-history"></i>
+                            <span>Riwayat Deteksi</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#about">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Tentang Aplikasi</span>
+                        </a>
+                    </li>
+                </ul>
             </div>
-            <ul class="nav-links">
-                <li>
-                    <a href="#detection" class="active">
-                        <i class="fas fa-camera"></i>
-                        <span>Deteksi Emosi</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#history">
-                        <i class="fas fa-history"></i>
-                        <span>Riwayat Deteksi</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#about">
-                        <i class="fas fa-info-circle"></i>
-                        <span>Tentang Aplikasi</span>
-                    </a>
-                </li>
-            </ul>
         </nav>
 
         <!-- Main Content -->
@@ -71,16 +69,40 @@
             <div id="about" class="content-section">
                 <h2>Tentang Aplikasi</h2>
                 <div class="about-content">
-                    <p>MYemo adalah aplikasi canggih untuk deteksi emosi real-time yang menggunakan teknologi AI untuk menganalisis ekspresi wajah secara akurat.</p>
-                    <p>Fitur utama:</p>
+                    <p>MYemo adalah aplikasi pendeteksi emosi berbasis ekspresi wajah yang dirancang untuk membantu berbagai profesi, termasuk psikolog, dalam menganalisis kondisi emosional seseorang. Dengan menggunakan teknologi pengenalan wajah canggih, MYemo dapat mendeteksi dan menampilkan emosi yang dirasakan oleh pengguna secara real-time.</p>
+
+                    <p>Aplikasi ini sangat berguna dalam berbagai kondisi, seperti saat seorang psikolog melakukan wawancara dengan pasien. MYemo membantu psikolog untuk lebih memahami kondisi emosional pasien, yang mungkin tidak dapat diungkapkan dengan kata-kata. Dengan mengetahui emosi yang sedang dirasakan pasien, psikolog dapat melakukan pendekatan yang lebih tepat dan meningkatkan kualitas interaksi dalam sesi terapi.</p>
+
+                    <p>Selain digunakan dalam psikologi, MYemo juga dapat diterapkan dalam berbagai situasi lainnya, tergantung pada kebutuhan pengguna, seperti:</p>
+
                     <ul>
-                        <li>Deteksi emosi real-time menggunakan kamera</li>
-                        <li>Analisis ekspresi wajah yang akurat</li>
-                        <li>Visualisasi data emosi dalam bentuk grafik</li>
-                        <li>Riwayat deteksi emosi yang terorganisir</li>
-                        <li>Antarmuka yang intuitif dan mudah digunakan</li>
+                        <li>Pengawasan emosional dalam sesi pembelajaran: Membantu pengajar atau instruktur untuk memahami suasana hati siswa atau peserta pelatihan.</li>
+                        <li>Monitoring kesehatan mental: Digunakan dalam aplikasi yang berfokus pada kesehatan mental untuk memantau perubahan emosi pengguna.</li>
+                        <li>Interaksi pelanggan: Dalam dunia bisnis, MYemo dapat digunakan untuk mengukur reaksi emosional pelanggan terhadap produk atau layanan tertentu.</li>
                     </ul>
-                    <p>Aplikasi ini dapat membantu Anda memahami dan melacak perubahan emosi Anda dari waktu ke waktu.</p>
+
+                    <h3>Fitur Utama MYemo</h3>
+                    <ul>
+                        <li><strong>Deteksi Emosi Real-time</strong><br>
+                        MYemo secara otomatis mendeteksi ekspresi wajah dan mengidentifikasi emosi pengguna seperti marah, bahagia, sedih, cemas, dan lainnya.</li>
+
+                        <li><strong>Visualisasi Emosi</strong><br>
+                        Hasil deteksi emosi ditampilkan secara visual dengan grafik yang mudah dipahami, memungkinkan pengguna untuk melacak tren emosi mereka dari waktu ke waktu.</li>
+
+                        <li><strong>Riwayat Emosi</strong><br>
+                        Aplikasi ini menyimpan riwayat deteksi emosi yang bisa diakses kapan saja, memudahkan pengguna untuk memantau perubahan emosional dalam jangka panjang.</li>
+
+                        <li><strong>Penyimpanan Data Lokal</strong><br>
+                        MYemo memungkinkan penyimpanan data di perangkat pengguna, menjaga privasi dan memungkinkan pengguna untuk mengakses data kapan pun dibutuhkan.</li>
+
+                        <li><strong>Antarmuka Pengguna yang Intuitif</strong><br>
+                        Aplikasi ini dirancang dengan antarmuka yang sederhana dan mudah digunakan, memungkinkan pengguna dari berbagai latar belakang untuk memanfaatkan fitur-fitur canggih dengan mudah.</li>
+
+                        <li><strong>Kustomisasi Fitur Emosi</strong><br>
+                        MYemo dapat disesuaikan untuk mendeteksi emosi spesifik sesuai kebutuhan pengguna, menjadikannya alat yang fleksibel untuk berbagai situasi.</li>
+                    </ul>
+
+                    <p>Dengan MYemo, analisis emosi menjadi lebih mudah dan lebih tepat, memberikan wawasan yang lebih dalam tentang keadaan emosional seseorang dalam berbagai kondisi.</p>
                 </div>
             </div>
         </main>
@@ -89,7 +111,6 @@
     <!-- Scripts -->
     <script src="js/chart.umd.js" defer></script>
     <script src="js/face-api.min.js" defer></script>
-
     <script src="js/faceDetector.js" defer></script>
     <script src="js/chartManager.js" defer></script>
     <script src="js/storageManager.js" defer></script>

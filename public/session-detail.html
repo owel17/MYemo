@@ -4,34 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detail Sesi - MYemo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
     <div class="app-container">
-        <!-- Sidebar -->
-        <nav id="sidebar" class="sidebar">
-            <div class="sidebar-header">
-                <h3>MYemo</h3>
-                <button id="toggleSidebar" class="toggle-btn">
-                    <i class="fas fa-bars"></i>
-                </button>
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <div class="nav-container">
+                <a href="/" class="nav-brand">MYemo</a>
+                <ul class="nav-links">
+                    <li>
+                        <a href="/">
+                            <i class="fas fa-camera"></i>
+                            <span>Deteksi Emosi</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/#history">
+                            <i class="fas fa-history"></i>
+                            <span>Riwayat Deteksi</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/#about">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Tentang Aplikasi</span>
+                        </a>
+                    </li>
+                </ul>
             </div>
-            <ul class="nav-links">
-                <li>
-                    <a href="/">
-                        <i class="fas fa-camera"></i>
-                        <span>Deteksi Emosi</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/#history">
-                        <i class="fas fa-history"></i>
-                        <span>Riwayat Deteksi</span>
-                    </a>
-                </li>
-            </ul>
         </nav>
 
         <!-- Main Content -->
@@ -89,7 +93,6 @@
     </div>
 
     <!-- Scripts -->
-    <script src="js/chart.umd.js"></script>
     <script src="js/storageManager.js"></script>
     <script src="js/chartManager.js"></script>
     <script src="js/sessionDetail.js"></script>

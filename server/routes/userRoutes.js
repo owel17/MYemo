@@ -7,5 +7,6 @@ router.post('/profiles', userController.createProfile);
 router.get('/profiles/:id', userController.getProfile);
 router.put('/profiles/:id', userController.updateProfile);
 router.delete('/profiles/:id', userController.deleteProfile);
+router.get('/profiles/:userId/match-emotion', userController.matchUsersBasedOnEmotion);
 
 module.exports = router; 

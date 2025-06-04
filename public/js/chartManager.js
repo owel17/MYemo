@@ -1,63 +1,81 @@
 class ChartManager {
     constructor() {
-        this.chart = null;
-        this.data = {
-            labels: [],
-            datasets: [{
-                label: 'Emotion Score',
-                data: [],
-                borderColor: '#3498db',
-                backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                tension: 0.4,
-                fill: true
-            }]
+        this.charts = {};
+        this.currentData = {
+            timestamps: [],
+            scores: []
         };
-        this.initializeChart();
     }
 
-    initializeChart() {
-        const ctx = document.getElementById('emotionChart').getContext('2d');
-        this.chart = new Chart(ctx, {
-            type: 'line',
-            data: this.data,
+    createDistributionChart(canvasId, data) {
+        const ctx = document.getElementById(canvasId).getContext('2d');
+        return new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: Object.keys(data).map(this.translateEmotion),
+                datasets: [{
+                    data: Object.values(data),
+                    backgroundColor: [
+                        '#FF6384',
+                        '#36A2EB',
+                        '#FFCE56',
+                        '#4BC0C0',
+                        '#9966FF',
+                        '#FF9F40'
+                    ]
+                }]
+            },
             options: {
                 responsive: true,
-                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Distribusi Emosi'
+                    }
+                }
+            }
+        });
+    }
+
+    createTimelineChart(canvasId, timestamps, scores) {
+        const ctx = document.getElementById(canvasId).getContext('2d');
+        return new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: timestamps.map(date => date.toLocaleTimeString('id-ID')),
+                datasets: [{
+                    label: 'Skor Emosi',
+                    data: scores,
+                    borderColor: '#36A2EB',
+                    tension: 0.1,
+                    fill: true,
+                    backgroundColor: 'rgba(54, 162, 235, 0.1)'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Perubahan Emosi'
+                    }
+                },
                 scales: {
                     y: {
-                        min: -1,
+                        beginAtZero: true,
                         max: 1,
-                        ticks: {
-                            stepSize: 1,
-                            callback: function(value) {
-                                if (value === 1) return 'Positive';
-                                if (value === 0) return 'Neutral';
-                                if (value === -1) return 'Negative';
-                                return value;
-                            }
+                        title: {
+                            display: true,
+                            text: 'Skor Kepercayaan'
                         }
                     },
                     x: {
                         title: {
                             display: true,
-                            text: 'Time'
-                        }
-                    }
-                },
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Emotion Tracking'
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                const value = context.raw;
-                                if (value === 1) return 'Positive';
-                                if (value === 0) return 'Neutral';
-                                if (value === -1) return 'Negative';
-                                return value;
-                            }
+                            text: 'Waktu'
                         }
                     }
                 }
@@ -65,32 +83,44 @@ class ChartManager {
         });
     }
 
+    translateEmotion(emotion) {
+        const translations = {
+            'happy': 'Bahagia',
+            'sad': 'Sedih',
+            'angry': 'Marah',
+            'fearful': 'Takut',
+            'disgusted': 'Jijik',
+            'surprised': 'Terkejut',
+            'neutral': 'Netral'
+        };
+        return translations[emotion] || emotion;
+    }
+
     addDataPoint(emotionData) {
-        const timestamp = new Date(emotionData.timestamp).toLocaleTimeString();
-        
-        this.data.labels.push(timestamp);
-        this.data.datasets[0].data.push(emotionData.score);
+        const timestamp = new Date();
+        const score = emotionData.score || 0;
 
-        // Keep only last 20 data points for better visualization
-        if (this.data.labels.length > 20) {
-            this.data.labels.shift();
-            this.data.datasets[0].data.shift();
+        this.currentData.timestamps.push(timestamp);
+        this.currentData.scores.push(score);
+
+        // Update chart if it exists
+        if (this.charts.timeline) {
+            this.charts.timeline.data.labels = this.currentData.timestamps.map(date => date.toLocaleTimeString('id-ID'));
+            this.charts.timeline.data.datasets[0].data = this.currentData.scores;
+            this.charts.timeline.update();
         }
-
-        this.chart.update();
     }
 
     clearChart() {
-        this.data.labels = [];
-        this.data.datasets[0].data = [];
-        this.chart.update();
-    }
-
-    getChartData() {
-        return {
-            labels: this.data.labels,
-            scores: this.data.datasets[0].data
+        this.currentData = {
+            timestamps: [],
+            scores: []
         };
+        if (this.charts.timeline) {
+            this.charts.timeline.data.labels = [];
+            this.charts.timeline.data.datasets[0].data = [];
+            this.charts.timeline.update();
+        }
     }
 }
 
