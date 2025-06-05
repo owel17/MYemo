@@ -4,25 +4,33 @@ class App {
         this.chartManager = new ChartManager();
         this.storageManager = new StorageManager();
         this.uiController = new UIController();
+        this.isInitialized = false;
 
-        this.initializeApp();
+        // Show loading indicator
+        this.uiController.showNotification('Memuat aplikasi...', 'info');
+        
+        // Initialize app after a short delay to allow DOM to be fully ready
+        setTimeout(() => this.initializeApp(), 100);
     }
 
     async initializeApp() {
         try {
-            // Initialize FaceAPI
+            // Initialize FaceAPI with loading indicator
+            this.uiController.showNotification('Memuat model deteksi wajah...', 'info');
             await this.faceDetector.initialize();
             
-            // Start camera
+            // Start camera with loading indicator
+            this.uiController.showNotification('Mengakses kamera...', 'info');
             await this.faceDetector.startCamera();
             
-            // Load history
+            // Load history in background
             this.loadHistory();
             
             // Set up event listeners
             this.setupEventListeners();
             
-            this.uiController.showNotification('Aplikasi berhasil diinisialisasi', 'success');
+            this.isInitialized = true;
+            this.uiController.showNotification('Aplikasi siap digunakan', 'success');
         } catch (error) {
             console.error('Error initializing app:', error);
             this.uiController.showNotification(error.message || 'Terjadi kesalahan saat menginisialisasi aplikasi', 'error');

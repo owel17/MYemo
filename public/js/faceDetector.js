@@ -7,19 +7,18 @@ class FaceDetector {
         this.animationFrameId = null;
         this.emotionCallback = null;
         this.modelsLoaded = false;
+        this.lastDetectionTime = 0;
+        this.detectionInterval = 500; // Deteksi setiap 500ms
     }
 
     async initialize() {
         try {
             console.log('Starting to load FaceAPI models...');
             
-            // Load FaceAPI models
+            // Load only necessary models
             await Promise.all([
                 faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
-                faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
-                faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
-                faceapi.nets.faceExpressionNet.loadFromUri('/models'),
-                faceapi.nets.ssdMobilenetv1.loadFromUri('/models')
+                faceapi.nets.faceExpressionNet.loadFromUri('/models')
             ]);
             
             this.modelsLoaded = true;
@@ -36,8 +35,9 @@ class FaceDetector {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ 
                 video: { 
-                    width: { ideal: 640 },
-                    height: { ideal: 480 }
+                    width: { ideal: 320 }, // Reduced resolution
+                    height: { ideal: 240 },
+                    facingMode: "user"
                 } 
             });
             this.video.srcObject = stream;
@@ -53,7 +53,6 @@ class FaceDetector {
                     this.canvas.height = this.video.videoHeight;
                     
                     console.log(`Video dimensions: ${this.video.videoWidth}x${this.video.videoHeight}`);
-                    console.log(`Canvas dimensions: ${this.canvas.width}x${this.canvas.height}`);
                     resolve();
                 };
             });
@@ -88,7 +87,12 @@ class FaceDetector {
     startProcessingVideo() {
         if (!this.isDetecting) return;
 
-        this.detectEmotion();
+        const now = Date.now();
+        if (now - this.lastDetectionTime >= this.detectionInterval) {
+            this.detectEmotion();
+            this.lastDetectionTime = now;
+        }
+
         this.animationFrameId = requestAnimationFrame(() => this.startProcessingVideo());
     }
 
@@ -97,8 +101,8 @@ class FaceDetector {
             if (this.video.readyState === 4) {
                 const detections = await faceapi.detectAllFaces(
                     this.video,
-                    new faceapi.SsdMobilenetv1Options({ minConfidence: 0.2 })
-                ).withFaceLandmarks().withFaceExpressions();
+                    new faceapi.TinyFaceDetectorOptions({ inputSize: 224 })
+                ).withFaceExpressions();
 
                 this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -126,7 +130,6 @@ class FaceDetector {
         const resizedDetections = faceapi.resizeResults(detections, displaySize);
         
         faceapi.draw.drawDetections(this.canvas, resizedDetections);
-        faceapi.draw.drawFaceLandmarks(this.canvas, resizedDetections);
         faceapi.draw.drawFaceExpressions(this.canvas, resizedDetections, 0.5);
     }
 

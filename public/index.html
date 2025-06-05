@@ -4,9 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MYemo - Deteksi Emosi Real-time</title>
+    <!-- Preload resources -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/face-api.js" as="script">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/chart.js" as="script">
+    <link rel="preload" href="styles/main.css" as="style">
+    
+    <!-- Styles -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
 </head>
@@ -45,7 +53,7 @@
                 <h2>Deteksi Emosi</h2>
                 <div class="detection-container">
                     <div class="video-container">
-                        <video id="video" width="640" height="480" autoplay muted></video>
+                        <video id="video" autoplay muted playsinline></video>
                         <canvas id="overlay"></canvas>
                     </div>
                     <div class="controls">

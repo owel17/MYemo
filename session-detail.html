@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Sesi - MYemo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <div class="nav-container">
+                <a href="/" class="nav-brand">MYemo</a>
+                <ul class="nav-links">
+                    <li>
+                        <a href="/">
+                            <i class="fas fa-camera"></i>
+                            <span>Deteksi Emosi</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/#history">
+                            <i class="fas fa-history"></i>
+                            <span>Riwayat Deteksi</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/#about">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Tentang Aplikasi</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="session-detail-container">
+                <div class="session-header">
+                    <h2>Detail Sesi</h2>
+                    <div class="session-info">
+                        <div class="info-item">
+                            <i class="fas fa-calendar"></i>
+                            <span id="sessionDate">Tanggal: -</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-clock"></i>
+                            <span id="sessionDuration">Durasi: -</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="session-content">
+                    <div class="emotion-summary">
+                        <h3>Ringkasan Emosi</h3>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <h4>Emosi Dominan</h4>
+                                <p id="dominantEmotion">-</p>
+                            </div>
+                            <div class="summary-item">
+                                <h4>Rata-rata Kepercayaan</h4>
+                                <p id="averageConfidence">-</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="emotion-charts">
+                        <div class="chart-container">
+                            <h3>Distribusi Emosi</h3>
+                            <canvas id="emotionDistributionChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3>Perubahan Emosi</h3>
+                            <canvas id="emotionTimelineChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="emotion-timeline">
+                        <h3>Timeline Emosi</h3>
+                        <div id="emotionTimeline" class="timeline-container">
+                            <!-- Timeline items will be added here dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/storageManager.js"></script>
+    <script src="js/chartManager.js"></script>
+    <script src="js/sessionDetail.js"></script>
+</body>
+</html> 
